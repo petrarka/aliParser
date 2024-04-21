@@ -9,6 +9,6 @@
 
 ## Какие кукисы нужны?
 Забиваешь в .env следующие переменные (имя кук такоеже)
-xman_t="cookie"
-xman_f="cookie"
-x_aer_token="cookie" 
+xman_t="cookie"  
+xman_f="cookie"  
+x_aer_token="cookie"  
