@@ -1,4 +1,7 @@
 import os
+import sys
+import time
+
 from dotenv import load_dotenv
 import requests as re
 from dataclasses import dataclass
@@ -21,6 +24,9 @@ class Item:
 
 
 def main():
+    SLEEP_TIME = 0
+    if len(sys.argv) > 1:
+        SLEEP_TIME = int(sys.argv[1])
     load_dotenv()
     xman_f = os.getenv("XMAN_F")
     xman_t = os.getenv("XMAN_T")
@@ -33,10 +39,11 @@ def main():
     for mode in [ACTIVE_TAB, ARCHIVE_TAB, DISPUT_TAB]:
         page = 1
         while True:
+            time.sleep(SLEEP_TIME)
             dataRaw, next = getItems(s, mode, page)
 
-            data = parseItem(s,dataRaw)
-            itemsToFile(data,f"./{mode}.csv")
+            data = parseItem(s, dataRaw)
+            itemsToFile(data, f"./{mode}.csv")
             print(f"Done: page: {page}, mode: {mode}")
             if not next: break
             page += 1
