@@ -27,6 +27,9 @@ def main():
     SLEEP_TIME = 0
     if len(sys.argv) > 1:
         SLEEP_TIME = int(sys.argv[1])
+    PAGE_SIZE = 20
+    if len(sys.argv) > 2:
+        PAGE_SIZE = int(sys.argv[2])
     load_dotenv()
     xman_f = os.getenv("XMAN_F")
     xman_t = os.getenv("XMAN_T")
@@ -40,7 +43,7 @@ def main():
         page = 1
         while True:
             time.sleep(SLEEP_TIME)
-            dataRaw, next = getItems(s, mode, page)
+            dataRaw, next = getItems(s, mode, page, PAGE_SIZE)
 
             data = parseItem(s, dataRaw)
             itemsToFile(data, f"./{mode}.csv")
@@ -50,10 +53,9 @@ def main():
     print("All done!")
 
 
-def getItems(s: re.Session, tabType: str, page: int):
-    pageLen = 20
+def getItems(s: re.Session, tabType: str, page: int, pageSize: int) -> tuple:
     items = []
-    resp = s.post(WEB_ORDER_LIST, json=createReqJson(tabType, page, pageLen))
+    resp = s.post(WEB_ORDER_LIST, json=createReqJson(tabType, page, pageSize))
     respJSON = resp.json()["data"]
     items.append(respJSON["items"])
     return items, respJSON["hasMore"]
