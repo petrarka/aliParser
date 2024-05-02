@@ -30,30 +30,26 @@ def main():
     s.cookies.set("xman_t", xman_t, domain=ALI_DOMAIN)
     s.cookies.set("x_aer_token", x_aer_token, domain=ALI_DOMAIN)
     s.headers.update({"User-Agent": UA})
-    activeDataRaw = getItems(s, "active")
-    archiveDataRaw = getItems(s, "archive")
-    disputeDataRaw = getItems(s, "dispute")
-    activeData = parseItem(s, activeDataRaw)
-    archiveData = parseItem(s, archiveDataRaw)
-    disputeData = parseItem(s, disputeDataRaw)
-    itemsToFile(activeData, "./active.csv")
-    itemsToFile(archiveData, "./archive.csv")
-    itemsToFile(disputeData, "./dispute.csv")
-    print("Done!")
+    for mode in [ACTIVE_TAB, ARCHIVE_TAB, DISPUT_TAB]:
+        page = 1
+        while True:
+            dataRaw, next = getItems(s, mode, page)
+
+            data = parseItem(s,dataRaw)
+            itemsToFile(data,f"./{mode}.csv")
+            print(f"Done: page: {page}, mode: {mode}")
+            if not next: break
+            page += 1
+    print("All done!")
 
 
-def getItems(s: re.Session, tabType: str):
+def getItems(s: re.Session, tabType: str, page: int):
     pageLen = 20
-    page = 1
     items = []
-    while True:
-        resp = s.post(WEB_ORDER_LIST, json=createReqJson(tabType, page, pageLen))
-        respJSON = resp.json()["data"]
-        items.append(respJSON["items"])
-        page += 1
-        if not respJSON["hasMore"]:
-            break
-    return items
+    resp = s.post(WEB_ORDER_LIST, json=createReqJson(tabType, page, pageLen))
+    respJSON = resp.json()["data"]
+    items.append(respJSON["items"])
+    return items, respJSON["hasMore"]
 
 
 def parseItem(s: re.Session, items: list[dict]) -> list[Item]:
@@ -82,8 +78,7 @@ def createReqJson(tabType: str, page: int, pageSize: int):
 
 
 def itemsToFile(items: list[Item], path: str):
-    f = open(path, "w", encoding='utf-8')
-    f.write("'name'\t'attrs'\t'status','img_url'\n")
+    f = open(path, "a", encoding='utf-8')
     for item in items:
         f.write(f"'{item.name}'\t'{item.attrs}'\t'{item.status}'\t'{item.img}'\n")
     f.close()
