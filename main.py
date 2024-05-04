@@ -10,7 +10,8 @@ from bs4 import BeautifulSoup
 
 ALI_DOMAIN = "aliexpress.ru"
 WEB_ORDER_LIST = "https://aliexpress.ru/aer-jsonapi/bx/orders/v3/web-order-list?_bx-v=2.5.11"
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0"
+#UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0"
+UA = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0"
 ACTIVE_TAB = "active"
 ARCHIVE_TAB = "archive"
 DISPUTE_TAB = "dispute"
